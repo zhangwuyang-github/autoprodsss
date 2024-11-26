@@ -1,5 +1,5 @@
 "use client";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { AppSideBar } from "@/components/app-sidebar";
 import { usePathname } from "next/navigation";
@@ -21,7 +21,6 @@ export default function RootLayout({
           <SidebarProvider>
             <AppSideBar />
             <main>
-              <SidebarTrigger />
               {children}
               <SpeedInsights />
             </main>

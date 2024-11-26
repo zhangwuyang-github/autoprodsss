@@ -9,61 +9,24 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "./ui/sidebar";
 import Image from "next/image";
+import { fetchMenuList } from "./service";
+import { useRequest } from "ahooks";
 
 export const AppSideBar = () => {
-  // useRequest(
-  //   () =>
-  //     fetch('/api/request', {
-  //       method: "post",
-  //       body: JSON.stringify({
-  //         body: {
-  //           body: { platformEnum: "WEB" },
-  //         },
-  //         url: "/api/operation/c2/navigation/c2/menu/show",
-  //         method: 'post',
-  //       }),
-  //     }),
-  //   {
-  //     manual: false,
-  //     onSuccess: resp => {
-  //       console.log(resp);
-  //     }
-  //   }
-  // );
-
-  const menu: {
-    key: string;
-    name: string;
-    disabled?: boolean;
-    icon?: ReactNode;
-  }[] = [
-    {
-      key: "home",
-      name: "主页",
-    },
-    {
-      key: "work-order-list",
-      name: "生产单",
-      disabled: true,
-    },
-    {
-      key: "order-list",
-      name: "订单",
-    },
-    {
-      key: "pre-list",
-      name: "预测单",
-      disabled: true,
-    },
-  ];
+  const menu = useRequest(
+    fetchMenuList,
+    { manual: false },
+  );
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="flex justify-center border-b mb-4">
+        <SidebarTrigger className="absolute right-2" />
+          <SidebarGroupLabel className="flex justify-center border-b mb-4 h-12">
             <Image
               width={28}
               height={28}
@@ -74,15 +37,24 @@ export const AppSideBar = () => {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menu.map((v) => (
-                <SidebarMenuItem key={v.key}>
+              {menu.data?.data?.data?.list?.map((v) => {
+                const baseUrl = v.baseUrl?.split('/');
+                let u = '/login';
+                if (baseUrl?.length) {
+                  u = `/${baseUrl[baseUrl?.length - 1]}`;
+                }
+                const defaultLogoSrc = "https://img.xinheyun.com/c4b62870-3cde-47f2-830f-a5f07801790b_7bb6b749f5132b58695093a4b7936654";
+                return (
+                  <SidebarMenuItem key={v.id}>
                   <SidebarMenuButton asChild>
-                    <a href={v.key}>
-                      <span>{v.name}</span>
+                    <a href={u}>
+                      <Image src={v.logo.startsWith('http') ? v.logo : defaultLogoSrc} width={20} height={20} alt="" />
+                      <span>{v.templateName}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
+                )
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
