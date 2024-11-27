@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
-import { EntityResponse } from '@/types/common.type';
 
 const getToken = async (): Promise<string> => {
     // 在服务端不能使用 localStorage，需要改用其他方式存储 token
